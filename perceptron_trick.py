@@ -179,9 +179,10 @@ def perceptron_trick_playground():
 
     # other settings
     st.sidebar.divider()
-    st.sidebar.toggle("Grid", value=True, key="grid_key")
+    st.sidebar.toggle("Clean Graph", value=False, key="hide_all_key")
+    st.sidebar.toggle("Show Grid", value=True, key="grid_key")
     st.sidebar.toggle("Show legend", value = True, key="legend_choice")
-    st.sidebar.toggle("Show ticks", value=True, key="axis_ticks_key")
+    st.sidebar.toggle("Show axis ticks", value=True, key="axis_ticks_key")
 
 
 
@@ -207,15 +208,24 @@ def perceptron_trick_playground():
     X_sample_df.x2 = X_sample_df.x2.apply(lambda x: x+1)
 
 
-    x = np.linspace(-100, 100)
-    m = 0.5
+
+
+    x_value = 5
+    x = np.array([-1000+i for i in range(1,2001)])
+    x = x*x_value
+    m = 0
     c = 2
-    
     y = (m*x) + c
+    print(x[:5], y[:5])
 
 
 
-    # ----------------- playground ------------------ #
+
+
+
+
+    # ----------------- Visualizing graph ------------------ #
+    plt.plot(x,y)
 
     # giving title to the plot 
     if st.session_state.graph_title_key:
@@ -261,8 +271,9 @@ def perceptron_trick_playground():
     plt.axhline(0, c='black', ls='--') 
      
     
-
-    plt.axis('on')
+    # clean graph
+    if st.session_state.hide_all_key:
+        plt.axis('off')
 
   
   
@@ -270,7 +281,6 @@ def perceptron_trick_playground():
     # plt.colorbar() 
     st.pyplot(plt)
 
-    st.sidebar.header("Configurations")
 
     
     
