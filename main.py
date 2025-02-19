@@ -23,7 +23,7 @@
 
 # imporing packages and utilities
 import streamlit as st 
-from perceptron_trick import perceptron_trick_main 
+from perceptron_trick import perceptron_trick_main, perceptron_trick_playground
 from ann import ann_main
 
 
@@ -39,9 +39,7 @@ DEVELOPING_TIME = True
 global_page_name = ""
 logo_url = "https://cdn-icons-png.flaticon.com/512/7017/7017532.png"
 st.set_page_config("ML Recaper", logo_url)
-ml_recaper_intro = """
-    
-    # <center>ML Recaper</center>  
+ml_recaper_intro = """ 
       
     *************
 
@@ -73,13 +71,13 @@ ml_recaper_other_intro = """
 
 # this code same in all pages
 def global_code():
-    logo_col1, logo_col2 = st.columns([1,4])
+    logo_col1, logo_col2 = st.columns([1,10])
 
     with logo_col1:
-        st.image(logo_url, width=90)
+        st.image(logo_url, width=50)
 
     with logo_col2:
-        st.title("ML Recaper")
+        st.markdown("#### ML Recaper")
 
     st.divider()
 
@@ -115,6 +113,7 @@ def intro():
 pages_names_to_func = {
     "Introduction": intro,
     "Perceptron Trick": perceptron_trick_main,
+    "Perceptron Trick Playground": perceptron_trick_playground,
     "ANN": ann_main
 }
 
@@ -128,9 +127,10 @@ pages_names_to_func = {
 
 
 
-# ---------------- Sidebar -------------- #
+# ---------------- Sidebar -------------- #s
+st.sidebar.image(logo_url, width=40)
+st.sidebar.markdown("### ML Recaper")
 
-st.sidebar.image(logo_url, use_container_width=True)
 st.sidebar.markdown(ml_recaper_intro, unsafe_allow_html=True)
 st.sidebar.write("")
 page_name = st.sidebar.selectbox(
