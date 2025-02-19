@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.datasets import make_blobs
+from typing import Tuple
 
 
 def perceptron_trick_main():
@@ -139,6 +140,74 @@ def perceptron_trick_main():
 
 
 
+def _take_inputs_according_to_equation(equation_type: str):
+    """
+    This function takes input form user according to the equation (selected by user)
+    """
+
+    fetch_latex = {
+        "General equation": "Ax + By + C = 0",
+        "Straight line": "y = mx + c",
+        "Horizontal line": "y = b",
+        "Vertical line": "x = a"
+    }
+
+    # display appropriate latex equation
+    st.latex(fetch_latex[equation_type])
+
+    # taking input A (coefficient of x)
+    if equation_type in ["Vertical line", "General equation"]:
+        st.number_input("A - coefficient of X", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_a_key")
+
+    # taking input B (coefficieent of y)
+    if equation_type in ["Horizontal line", "General equation", "Straight line"]:
+        st.number_input("B - coefficient of Y", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_b_key")
+
+    # taking input C (constant)
+    if equation_type == "General equation":
+        st.number_input("C - Constant", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_c_key")
+
+    # taking input m (slope)
+    if equation_type == "Straight line":
+        st.number_input("m - slope", min_value=-10.0, value=1.0, max_value=10.0, step=0.1, key="general_equation_input_m_key")
+        
+
+    
+        
+
+
+
+
+def _get_values_for_appropriate_equation(equation: str) -> Tuple:
+    
+    # declaring variables
+    a, b, c, m = None, None, None, None 
+
+    # getting value of A (coefficient of x)
+    if equation in ["Vertical line", "General equation"]:
+        a = st.session_state.general_equation_input_a_key
+
+    # getting value of B (coefficieent of y)
+    if equation in ["Horizontal line", "General equation", "Straight line"]:
+        b = st.session_state.general_equation_input_b_key
+
+    # getting value of C (constant)
+    if equation == "General equation":
+        c = st.session_state.general_equation_input_c_key
+
+    # getting value of m (slope)
+    if equation == "Straight line":
+        m = st.session_state.general_equation_input_m_key
+
+    return (a, b, c, m)
+
+        
+
+
+
+
+
+
 
 
 
@@ -208,24 +277,51 @@ def perceptron_trick_playground():
     X_sample_df.x2 = X_sample_df.x2.apply(lambda x: x+1)
 
 
+    # allocating spaces for graph
+    space_for_graph = st.empty()
+
+    # for line 1
+    st.divider()
+    st.text_input("", placeholder="label for line 1", key="line_1_label_key")
+    st.selectbox("Choose color", ["Red","Orange","Yellow","Brown","Cyan","Blue","Black","White"], key="colors_for_line_key")
+    st.selectbox("", options=["General equation", "Straight line","Horizontal line","Vertical line"], key="equations_variety_key")
+
+    # getting user selected equation
+    selected_equation = st.session_state.equations_variety_key
+
+    # taking user input according to equation selection
+    _take_inputs_according_to_equation(selected_equation)
+
+    # getting values from input widgets according to equation selection
+    a, b, c, m = _get_values_for_appropriate_equation(selected_equation)
+
+    x = np.array([-100+i for i in range(1,201)])
+
+    # calculating y according to the equation
+    match(selected_equation):
+        case "General equation":
+            y = -(a/b)*x - c 
+
+        case "Straight line":
+            y = m*x + c 
+
+        case "Horizontal line":
+            y = b 
+        
+        case "Vertical line":
+            x = a
 
 
-    x_value = 5
-    x = np.array([-1000+i for i in range(1,2001)])
-    x = x*x_value
-    m = 0
-    c = 2
-    y = (m*x) + c
-    print(x[:5], y[:5])
 
 
 
 
 
-
-
-    # ----------------- Visualizing graph ------------------ #
-    plt.plot(x,y)
+    # ----------------- Visualizing graph ------------------ #y
+    if selected_equation == "Vertical line":
+        plt.plot(x)
+    else:
+        plt.plot(x,y, color=st.session_state.colors_for_line_key.lower(), label=st.session_state.line_1_label_key)
 
     # giving title to the plot 
     if st.session_state.graph_title_key:
@@ -260,6 +356,7 @@ def perceptron_trick_playground():
     
     # axis ticks
     if not (st.session_state.axis_ticks_key):
+        # clearing ticks
         plt.xticks([])
         plt.yticks([])
 
@@ -279,7 +376,7 @@ def perceptron_trick_playground():
   
     # visualizing the mapping from values to colors 
     # plt.colorbar() 
-    st.pyplot(plt)
+    space_for_graph.pyplot(plt)
 
 
     
