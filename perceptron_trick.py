@@ -152,24 +152,30 @@ def _take_inputs_according_to_equation(equation_type: str):
         "Vertical line": "x = a"
     }
 
+    line_input_col1, line_input_col2, line_input_col3 = st.columns([1,1,1])
+
     # display appropriate latex equation
     st.latex(fetch_latex[equation_type])
 
     # taking input A (coefficient of x)
     if equation_type in ["Vertical line", "General equation"]:
-        st.number_input("A - coefficient of X", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_a_key")
+        with line_input_col1:
+            st.number_input("A - coefficient of X", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_a_key")
 
     # taking input B (coefficieent of y)
     if equation_type in ["Horizontal line", "General equation", "Straight line"]:
-        st.number_input("B - coefficient of Y", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_b_key")
+        with line_input_col2:
+            st.number_input("B - coefficient of Y", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_b_key")
 
     # taking input C (constant)
     if equation_type == "General equation":
-        st.number_input("C - Constant", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_c_key")
+        with line_input_col3:
+            st.number_input("C - Constant", min_value=-10, value=1, max_value=10, step=1, key="general_equation_input_c_key")
 
     # taking input m (slope)
     if equation_type == "Straight line":
-        st.number_input("m - slope", min_value=-10.0, value=1.0, max_value=10.0, step=0.1, key="general_equation_input_m_key")
+        with line_input_col2:
+            st.number_input("m - slope", min_value=-10.0, value=1.0, max_value=10.0, step=0.1, key="general_equation_input_m_key")
         
 
     
@@ -280,11 +286,19 @@ def perceptron_trick_playground():
     # allocating spaces for graph
     space_for_graph = st.empty()
 
+
+    
     # for line 1
     st.divider()
-    st.text_input("", placeholder="label for line 1", key="line_1_label_key")
-    st.selectbox("Choose color", ["Red","Orange","Yellow","Brown","Cyan","Blue","Black","White"], key="colors_for_line_key")
-    st.selectbox("", options=["General equation", "Straight line","Horizontal line","Vertical line"], key="equations_variety_key")
+    line_input_col1, line_input_col2, line_input_col3 = st.columns([1,1,1])
+    with line_input_col1:
+        st.text_input("", placeholder="label for line 1", key="line_1_label_key")
+    
+    with line_input_col2:
+        st.selectbox("Choose color", ["Red","Orange","Yellow","Brown","Cyan","Blue","Black","White"], key="colors_for_line_key")
+
+    with line_input_col3:
+        st.selectbox("", options=["General equation", "Straight line","Horizontal line","Vertical line"], key="equations_variety_key")
 
     # getting user selected equation
     selected_equation = st.session_state.equations_variety_key
